@@ -8,14 +8,15 @@ public class Main {
         double[][] x = sd.getX();
         double[][] y = sd.getY();
         double[][][] w = sd.getW();
-        int epoch = 1000;
+
+        int epoch = 10;
 
         for(int i = 0; i <= epoch; i++){
             TensorFlow tf = new TensorFlow(x,y,w);
             double cost = GetCost.forward(tf.getHypothesis(), y);
             double accuracy = tf.prediction();
             w = tf.optimize();
-            if(i % 100 == 0)
+            if(i % 1 == 0)
                 System.out.println("epoch = " + i + "\tcost = " + cost + "\tAccuracy = " + accuracy);
         }
     }

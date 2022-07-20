@@ -11,7 +11,7 @@ public class TensorFlow {
     private double[][] new_x;
     private double[][] hypothesis;
     private double[][][] grad;
-    private double learning_rate = 0.001;
+    private double learning_rate = 0.01;
     public TensorFlow(double[][] x, double[][] y, double[][][] w){
         this.x = x;
         this.y = y;
@@ -20,32 +20,29 @@ public class TensorFlow {
     }
     public void setHypothesis(){
         this.new_x = FirstLayer.forward(x, w);
-        this.hypothesis = SecondLayer.forward(x, w);
+        this.hypothesis = SecondLayer.forward(new_x, w);
     }
     public double[][] getHypothesis(){
         return hypothesis;
     }
     public void grad_fn(){
-        System.out.println(w.length + " " + w[0].length + " " + w[0][0].length);
         double[][][] grad = new double[w.length][w[0].length][w[0][0].length];
-        double[][] dervCostNewXW = Sigmoid.backward(hypothesis, GetCost.backward(hypothesis, y));
-        grad[2] = LogitFunction.backward(new_x, dervCostNewXW[0][0]);
+        double[][] dercCostH = GetCost.backward(hypothesis, y);
+        double[][] dervCostNewXW = Sigmoid.backward(hypothesis, dercCostH);
+        grad[2] = Matrix.dot(Matrix.transpose(new_x), dervCostNewXW);
 
-        double[][] dervCostNewX = LogitFunction.backward(w[2], dervCostNewXW[0][0]);
+        double[][] dervCostNewX = Matrix.dot(dervCostNewXW, Matrix.transpose(w[2]));
         double[][] dervCostXW = Sigmoid.backward(new_x, dervCostNewX);
-
-        System.out.println(dervCostNewXW.length + " " + dervCostNewXW[0].length);
-        System.out.println(x.length + " " + x[0].length);
-        double[][] dervCostW = LogitFunction.backward(x, dervCostXW);
+        double[][] dervCostW = Matrix.dot(Matrix.transpose(x), dervCostXW);
         for(int i = 0; i < grad[0].length; i++){
-            grad[0][i][0] = dervCostW[i][0];
-            grad[1][i][0] = dervCostW[i][1];
+            grad[0][i][0] = dervCostW[i][1];
+            grad[1][i][0] = dervCostW[i][2];
         }
         this.grad = grad;
     }
     public double[][][] optimize() {
         grad_fn();
-        return Matrix.sub(w, Matrix.mul_c(learning_rate, grad));
+        return Matrix.sub(w, Matrix.mul(learning_rate, grad));
     }
 
     public double prediction(){

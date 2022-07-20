@@ -2,21 +2,29 @@ package edu.handong.csee.isel.itc.study;
 
 public class Matrix {
 
-    public static double[][] matmul(double[][] a, double[][] b){
+    public static double[][] dot(double[][] a, double[][] b){
         double[][] result = new double[a.length][b[0].length];
         for(int z=0; z < b[0].length;z++){
             for(int i = 0; i < a.length; i++){
                 double temp = 0;
                 for(int j = 0; j < a[0].length; j++){
-                    temp +=  (a[i][j]*b[j][z]);
+                    temp += (a[i][j]*b[j][z]);
                 }
                 result[i][z] = temp;
             }
         }
         return result;
     }
+    public static double[][] mul(double[][] a, double[][] b){
+        for(int i = 0; i < a.length; i++){
+            for(int j = 0; j < a[0].length; j++){
+                a[i][j] *= b[i][j];
+            }
+        }
+        return b;
+    }
 
-    public static double[][] mul_c(double num, double[][] matrix){
+    public static double[][] mul(double num, double[][] matrix){
         for(int i = 0; i < matrix.length; i++){
             for(int j = 0; j < matrix[0].length; j++){
                 matrix[i][j] *= num;
@@ -24,7 +32,7 @@ public class Matrix {
         }
         return matrix;
     }
-    public static double[][][] mul_c(double num, double[][][] matrix){
+    public static double[][][] mul(double num, double[][][] matrix){
         for(int i = 0; i < matrix.length; i++){
             for(int j = 0; j < matrix[i].length; j++){
                 for(int z = 0; z < matrix[i][j].length; z++){
@@ -34,7 +42,7 @@ public class Matrix {
         }
         return matrix;
     }
-    public static double[] mul_c(double num, double[] matrix){
+    public static double[] mul(double num, double[] matrix){
         for(int i = 0; i < matrix.length; i++){
             matrix[i] *= num;
         }
